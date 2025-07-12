@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+:root{
+    --cor1: #1E3A8A;
+    --cor2: #0554F2;
+    --cor3: #2E2E2E;
+    --cor4: #FBBF24;
+}
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: var(--cor3);
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+header{
+    display: flex;
+    justify-content: space-between;
+    width: 96%;
+    padding: 0 2%;
+    height: 9vh;
+    background-color: var(--cor1);
+}
+#titulo{
+    display: flex;
+    align-items: center;
+}
+img{
+    width: 40px;
+    height: 40px;
+}
+h1{
+    font-family: "Anton", sans-serif;
+    letter-spacing: 2px;
+    font-weight: 100;
+    color: white;
+}
+#botoes{
+    display: flex;
+    width: 40%;
+}
+.botao{
+    display: flex;
+    height: 100%;
+    width: 30%;
+    padding: 0 1.5%;
+    font-size: 22px;
+    border: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+#btnCriar:hover{
+    background-color: green;
+}
+#btnExcluir:hover{
+    background-color: red;
+}
+.botao:hover{
+    background-color: var(--cor4);
+}
+main{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 25vh;
+    padding: 0 10% 3% 10%;
+    width: 80%;
+}
+.divLista{
+    display: flex;
+    margin: 10% 15%;
+    width: 70%;
+    height: 80%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    border-radius: 16px;
+    background-color: var(--cor2);
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+    border: 2px solid white;
+    text-decoration: none;
+    color: white;
+}
+
+@media (max-width: 500px) {
+    header{
+        height: 7vh;
+    }
+    #titulo{
+        width: 30%;
+    }
+    img{
+        width: 30px;
+        height: 30px;
+    }
+    h1{
+        font-size: 26px;
+        font-weight: 100;
+        color: white;
+    }
+    #botoes{
+        width: 60%;
+    }
+    .botao{
+        width: 33%;
+        font-size: 16px;
+        padding: 0;
+    }
+    main{
+        padding: 0 5% 3% 5%;
+        width: 90%;
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 12vh;
+    }
+    .divLista{
+        margin: 15% 10%;
+        width: 80%;
+        height: 70%;
+        font-size: 16px;
+    }
+}

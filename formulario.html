@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/formulario.css">
+    <link rel="icon" type="image/x-icon" href="img/logo.png">
+    <title>Tasks</title>
+</head>
+<body onload="verificarAcao()">
+    <h1 id="titulo">Tasks</h1>
+    <form>
+        <div class="input" id="divIndex">
+            <label>Index</label>
+            <input type="number" name="index" id="index" placeholder=" Index">
+        </div>
+        <div class="input" id="divTasks">
+            <label id="nomeLb">Tarefa</label>
+            <input type="text" name="tasks" id="nomeInput" placeholder=" Tarefa">
+        </div>
+    </form>
+    <a id="botao">Confirmar</a>
+    <script src="app.js"></script>
+</body>
+</html>
