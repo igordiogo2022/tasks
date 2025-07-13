@@ -74,7 +74,7 @@ input::placeholder{
     width: 10%;
     padding: 0.5% 0;
     font-size: 20px;
-    color: var(--cor5);
+    color: white;
     font-family: var(--fonte1);
     text-decoration: none;
     box-shadow: 10px 7px 10px black;

@@ -42,7 +42,7 @@ body{
 }
 #botoes{
     display: flex;
-    gap:10%;
+    /* gap:10%; */
     width: 100%;
     height: 8vh;
     align-items: center;
@@ -50,7 +50,9 @@ body{
     margin-bottom: 2%;
 }
 .botao{
-    padding: 0 5%;
+    display: flex;
+    margin: 0 2%;
+    width: 20%;
     height: 90%;
     font-size: 18px;
     border: 0;
@@ -58,7 +60,7 @@ body{
     font-family: "Poppins", serif;
     text-decoration: none;
     background-color: var(--cor2);
-    display: flex;
+    justify-content: center;
     align-items: center;
     color: white;
 }
@@ -107,23 +109,21 @@ td{
 @media (max-width: 500px) {
     #botoes{
         height: 6vh;
-        gap: 5%;
+        /* gap: 5%; */
         margin-bottom: 4%;
     }
     .botao{
         font-size: 16px;
+        width: 25%;
     }
     .tituloItem{
         font-size: 17px;
-    }
-    progress {
-        height: 20px;
     }
     td{
         font-size: 14px;
     }
     #listaItens{
-        margin: 0 10%;
-        width: 80%;
+        margin: 0 5%;
+        width: 90%;
     }
 }
