@@ -237,11 +237,11 @@ function excluirTask(lista){
     indexGeral = 0;
     
     for(const task of listaTasks){
-        console.log(indexGeral,indexLista);
         if(lista == task[1]){
             if(indexLista == indexProcurado-1){
                 listaTasks.splice(indexGeral, 1)
                 localStorage.setItem("listaTasksLS", JSON.stringify(listaTasks));
+                indexLista++;
             }else{
                 indexGeral++;
                 indexLista++;
