@@ -180,6 +180,7 @@ function removerLista(){
         for(let i=1; i<listaTasks.length; i++){
             if(listas[index-1] == listaTasks[i][1]){
                 listaTasks.splice(i, 1);
+                i--;
             }
         }
         
