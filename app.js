@@ -36,20 +36,26 @@ function carregarTarefas(){
     
     const tabelaTarefas = document.getElementById("listaItens");
     tarefasSelecionadas.forEach(tarefa => {
-        tabelaTarefas.innerHTML += `<tr id='tr${tarefa.id}' style='background-color: var(--cor1);'>
+        if(tarefa.situacao=="concluida"){
+            classeTr = "concluida";
+            checked = "checked=true";
+        }else if(tarefa.situacao=="pendente"){
+            classeTr = "pendente";
+            checked = "";
+        }
+
+        tabelaTarefas.innerHTML += `<tr id='tr${tarefa.id}' class='${classeTr}'>
         <td>${tarefa.tarefa}</td>
         <td><button id='btnEditar' onclick='carregarFormulario("tarefas", ${tarefa.id})'><i class="fa-solid fa-pen"></i></button></td>
-        <td class='checkboxTd'><input type='checkbox' id='cb${tarefa.id}' onclick='mudaSituacao(${tarefa.id})'></td>
-        </tr>`;
+        <td class='checkboxTd'><input type='checkbox' id='cb${tarefa.id}' onclick='mudaSituacao(${tarefa.id})' ${checked}></td>
+        </tr>`; 
     });
 
     tabelaTarefas.innerHTML += `<tr>
     <td colspan="3">
     <button onclick="apagarTarefasConcluidas(${categoria.id})" id="apagarConcluidasBtn"><i class="fa-solid fa-trash" aria-hidden="true"></i> Apagar já Concluídas</button>
     </td>
-    </tr>`;
-    
-    tabelaTarefas.appendChild(tr);
+    </tr>`;   
 }
 
 function carregarFormulario(tipo, idItem){
