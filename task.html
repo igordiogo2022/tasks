@@ -10,17 +10,18 @@
 <body onload="carregarTarefas()">
     <div id="divTitulo">
         <h1 id="titulo">Tasks</h1>
-        <a href="index.html" id="btnVoltar"><i class="fa-solid fa-house"></i><a>
+        <a href="index.html" id="btnVoltar"><i class="fa-solid fa-house"></i></a>
     </div>
     <div id="formulario">
-        <input type="text" id="tarefaInput" placeholder="Nome da Tarefa">
+        <input type="text" id="inputFormulario" placeholder="Nome da Tarefa" maxlength="25">
         <button id="btnFormulario">Confirmar</button>
     </div>
 
     <table id="listaItens">
         <tr>
             <th>Tarefas</th>
-            <th>Ação</th>
+            <th>Editar</th>
+            <th>Concluir</th>
         </tr>
     </table>
     <script src="app.js"></script>
