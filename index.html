@@ -7,20 +7,20 @@
     <link rel="stylesheet" href="css/style.css">
     <title>Tasks</title>
 </head>
-<body onload="carregarListas()">
+<body onload="carregarCategorias()">
     <header>
         <div id="titulo">
             <img src="img/logo.png" alt="logo.png">
             <h1>Tasks</h1>
         </div>
-        <div id="botoes">
-            <a href="formulario.html?acao=criar&tipo=lista" class="botao" id="btnCriar">Criar</a>
-            <a href="formulario.html?acao=editar&tipo=lista" class="botao">Editar</a>
-            <a href="formulario.html?acao=remover&tipo=lista" class="botao" id="btnExcluir">Remover</a>
-        </div>
     </header>
+    <div id="formulario">
+        <input type="text" id="categoriaInput" placeholder="Nome da Categoria">
+        <button id="btnFormulario" onclick="criarCategoria()">Confirmar</button>
+    </div>
     <main>
     </main>
     <script src="app.js"></script>
+    <script src="https://kit.fontawesome.com/3802d20ec1.js" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -7,20 +7,18 @@
     <link rel="icon" type="image/x-icon" href="img/logo.png">
     <title>Tasks</title>
 </head>
-<body onload="carregarTasks()">
+<body onload="carregarTarefas()">
     <div id="divTitulo">
         <h1 id="titulo">Tasks</h1>
         <a href="index.html" id="btnVoltar"><i class="fa-solid fa-house"></i><a>
     </div>
-    <div id="botoes">
-        <a id="adicionar" class="botao" href="formulario.html?acao=adicionar&tipo=task">Adicionar</a>
-        <a id="editar" class="botao" href="formulario.html?acao=editar&tipo=task">Editar</a>
-        <a id="excluir" class="botao" href="formulario.html?acao=excluir&tipo=task">Excluir</a>
+    <div id="formulario">
+        <input type="text" id="tarefaInput" placeholder="Nome da Tarefa">
+        <button id="btnFormulario">Confirmar</button>
     </div>
 
     <table id="listaItens">
         <tr>
-            <th>ID</th>
             <th>Tarefas</th>
             <th>Ação</th>
         </tr>

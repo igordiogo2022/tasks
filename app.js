@@ -1,209 +1,170 @@
-// verifica se a lista já foi criada no LocalStorage
-try{
-    listas = JSON.parse(localStorage.getItem("listasLS"));
-    if(listas == null){
-        listas = [];
-    }
-}catch{
-    listas = [];
-}
-// verifica se a listaTasks já foi criada no LocalStorage
-try{
-    listaTasks = JSON.parse(localStorage.getItem("listaTasksLS"));
-    if(listaTasks == null){
-        listaTasks = [];
-    }
-}catch{
-    listaTasks = [];
-}
+let listas = JSON.parse(localStorage.getItem("listasLS") || "[]");
+let listaTasks = JSON.parse(localStorage.getItem("listaTasksLS") || "[]");
+let dados = JSON.parse(localStorage.getItem("dados")) || {version: 2, categorias: [], tarefas: []};
+let [categorias, tarefas] = [dados.categorias, dados.tarefas];
 
-
-// Exibe as listas na tela
-function carregarListas(){
-    
+// Exibe as categorias na tela
+function carregarCategorias(){
     if(listas.length>0){
-        contadorIndex = 1;
-        for (const lista of listas){
-            divLista = document.createElement("a");
-            divLista.href = "task.html?nome="+lista;
-            divLista.classList.add("divLista");
-            divLista.innerHTML = contadorIndex+"."+lista;
-
-            contadorIndex++;
-            
-            main = document.querySelector("main");
-            main.appendChild(divLista);
-        }
+        listas.forEach(item => {
+            let idCategoria = obterId(categorias);
+            categorias.push({id: idCategoria, nome: item});
+        });
+        localStorage.setItem("dados", JSON.stringify(dados));
+        localStorage.removeItem("listasLS");
     }
+    if(listaTasks.length>0){
+        listaTasks.forEach(tarefa => {
+            let idTarefa = obterId(tarefas);
+            let categoriaId = categorias.find(categoria => categoria.nome==tarefa[1]).id;
+            dados.tarefas.push({id: idTarefa, tarefa: tarefa[0], categoria: categoriaId, situacao: tarefa[2]})
+        });        
+            localStorage.setItem("dados", JSON.stringify(dados));
+        localStorage.removeItem("listaTasksLS");
+    }
+
+    categorias.forEach(categoria => {
+        main = document.querySelector("main");
+        main.innerHTML += `<div class='cardCategoria'>
+        <p class='iconeCard'><i class='fa-solid fa-clipboard-check'></i></p>
+        <p>${categoria.nome}</p>
+        <div class='botoesCard'>
+            <button onclick='verCategoria(${categoria.id})'>Ver</button>
+            <button onclick='carregarFormulario(${categoria.id})'>Editar</button>
+            <button onclick='preRemoverCategoria(${categoria.id})' id='btnDeletar${categoria.id}'>Deletar</button>
+        </div>
+        </div>`;
+    });
 }
 
-// Exibe as tasks na tela
-function carregarTasks(){
+function obterId(lista){
+    return (lista[lista.length-1] || {id:0}).id+1;
+}
+function verCategoria(id){
+    window.location.href = `task.html?categoria=${id}`;
+}
+
+// Exibe as tarefas na tela
+function carregarTarefas(){ 
     const parametros = new URLSearchParams(window.location.search);
-    const lista = parametros.get("nome");
+    const categoriaId = parametros.get("categoria");
+    const categoria = categorias.find(categoria => categoria.id==categoriaId);
+    const btnFormulario = document.querySelector("#btnFormulario");
     
-    adicionarBtn = document.getElementById("adicionar");
-    editarBtn = document.getElementById("editar");
-    excluirBtn = document.getElementById("excluir");
-    adicionarBtn.href = "formulario.html?acao=adicionar&tipo=task&lista="+lista;
-    editarBtn.href = "formulario.html?acao=editar&tipo=task&lista="+lista;
-    excluirBtn.href = "formulario.html?acao=excluir&tipo=task&lista="+lista;
+    btnFormulario.setAttribute("onclick", `adicionarTarefa(${categoria.id})`);
     
     titulo = document.getElementById("titulo");
-    titulo.innerHTML = lista;
+    titulo.innerHTML = categoria.nome;
     
-    if(listaTasks.length>0){
-        contadorIndex = 1;
-        id = 0;
-        for (const task of listaTasks){
-            if(task[1]==lista){
-                tdIndex = document.createElement("td");
-                tdTask = document.createElement("td");
-                tdAcao = document.createElement("td");
-                checkbox = document.createElement("input");
-                tr = document.createElement("tr"); 
+    const tarefasSelecionadas = tarefas.filter(tarefa => tarefa.categoria==categoria.id);
+    
+    const tabelaTasks = document.getElementById("listaItens");
+    tarefasSelecionadas.forEach(tarefa => {
+        tdTask = document.createElement("td");
+        tdAcao = document.createElement("td");
+        checkbox = document.createElement("input");
+        tr = document.createElement("tr"); 
+        tr.id = "tr"+tarefa.id;
+    
+        tdTask.innerHTML = tarefa.tarefa;
         
-                tdIndex.innerHTML = contadorIndex;
-                contadorIndex++;
-                tdTask.innerHTML = task[0];
-                
-                checkbox.type = "checkbox";
-                checkbox.id = "cb"+id;
-                checkbox.setAttribute("onclick","mudaSituacao("+id+")");
-                
-                tdAcao.classList.add("acoes");
-                tdAcao.appendChild(checkbox);
-                
-                tr.appendChild(tdIndex);
-                tr.appendChild(tdTask);
-                tr.appendChild(tdAcao);
-                
-                tabelaTasks = document.getElementById("listaItens");
-
-                if(task[2]=="concluida"){
-                    marcarConcluido(tr);
-                    checkbox.checked = true;
-                }else if(task[2]=="pendente"){
-                    desmarcarConcluido(tr);
-                    checkbox.checked = false;
-                }
-                
-                tabelaTasks.appendChild(tr);
-            }
-            id++;
-        }
-    }
-}
-
-
-function verificarAcao(){
-    const parametros = new URLSearchParams(window.location.search);
-    const acao = parametros.get("acao");
-    const tipo = parametros.get("tipo");
-    
-    if(tipo=="lista"){
-        label = document.getElementById("nomeLb");
-            input = document.getElementById("nomeInput");
-            botao = document.getElementById("botao");
-            label.innerHTML="Nome";
-            input.placeholder = " Nome";
-            botao.href = "index.html";
-            
-        if(acao=="criar"){
-            document.getElementById("divIndex").style.display = "none";
-            botao.setAttribute("onclick","criarLista()");
-            document.getElementById("titulo").innerHTML = "Criar Lista";
-            
-        }else if(acao=="editar"){
-            document.getElementById("titulo").innerHTML = "Editar Lista";
-            botao.setAttribute("onclick","editarLista()");
-            
-        }else if(acao=="remover"){
-            document.getElementById("divTasks").style.display = "none";
-            document.getElementById("titulo").innerHTML = "Remover Lista";
-            botao.setAttribute("onclick","removerLista()");
+        checkbox.type = "checkbox";
+        checkbox.id = "cb"+tarefa.id;
+        checkbox.setAttribute("onclick","mudaSituacao("+tarefa.id+")");
+        
+        tdAcao.classList.add("acoes");
+        tdAcao.appendChild(checkbox);
+        
+        tr.appendChild(tdTask);
+        tr.appendChild(tdAcao);
+        
+        
+        if(tarefa.situacao=="concluida"){
+            tr.style.backgroundColor = "green";
+            tr.style.textDecoration = "line-through";
+            tr.style.fontStyle = "italic";
+            checkbox.checked = true;
+        }else if(tarefa.situacao=="pendente"){
+            tr.style.backgroundColor = "var(--cor1)";
+            checkbox.checked = false;
         }
         
-    }else if(tipo=="task"){
-        const parametros = new URLSearchParams(window.location.search);
-        const lista = parametros.get("lista");
-        botao = document.getElementById("botao");
-        botao.href = "task.html?nome="+lista;
-        if(acao=="adicionar"){
-            document.getElementById("divIndex").style.display = "none";
-            botao.setAttribute("onclick","adicionarTask()");
-            document.getElementById("titulo").innerHTML = "Adicionar Task";
-            
-        }else if(acao=="editar"){
-            document.getElementById("titulo").innerHTML = "Editar Task";
-            botao.setAttribute("onclick","editarTask('"+lista+"')");
-            
-        }else if(acao=="excluir"){
-            document.getElementById("divTasks").style.display = "none";
-            document.getElementById("titulo").innerHTML = "Excluir Task";
-            botao.setAttribute("onclick","excluirTask('"+lista+"')");
-        }
-    }   
+        tabelaTasks.appendChild(tr);
+    });
+    
+    tr = document.createElement("tr");
+    
+    apagarConcluidasTd = document.createElement("td");
+    apagarConcluidasTd.setAttribute("colspan", "3");
+
+    btn = document.createElement("button");
+    btn.setAttribute("onclick", "apagarTarefasConcluidas("+categoria.id+")");
+    btn.innerHTML = "<i class='fa-solid fa-trash'></i> Apagar já Concluídas";
+    btn.id = "apagarConcluidasBtn";
+
+    apagarConcluidasTd.appendChild(btn);
+    tr.appendChild(apagarConcluidasTd);
+    
+    tabelaTasks.appendChild(tr);
 }
 
-function criarLista(){
-    nomeLista = document.getElementById("nomeInput").value;
+function criarCategoria(){
+    nomeCategoria = document.querySelector("#categoriaInput").value;
     
-    listas.push(nomeLista);
+    id = obterId(categorias);
+    categorias.push({id: id, nome: nomeCategoria});
     
-    localStorage.setItem("listasLS", JSON.stringify(listas));
+    localStorage.setItem("dados", JSON.stringify(dados));
+    window.location.href = `index.html`;
 }
 
-function editarLista(){
-    index = document.getElementById("index").value;
-    nomeLista = document.getElementById("nomeInput").value;
-    if(index>listas.length){
-        alert("Index não encontrado");
-    }else{
-        for(let i=1; i<listaTasks.length; i++){
-            if(listas[index-1] == listaTasks[i][1]){
-                listaTasks[i][1] = nomeLista;
-            }
-        }
-        
-        listas[index-1] = nomeLista;
-        localStorage.setItem("listasLS", JSON.stringify(listas));
-        localStorage.setItem("listaTasksLS", JSON.stringify(listaTasks));
-    }
+function carregarFormulario(idCategoria){
+    const categoriaInput = document.querySelector("#categoriaInput");
+    const btnFormulario = document.querySelector("#btnFormulario");
+    let categoriaSelecionada = categorias.find(item => item.id==idCategoria);
+
+    categoriaInput.value = categoriaSelecionada.nome;
+    btnFormulario.setAttribute("onclick", `editarCategoria(${idCategoria})`);
 }
 
-function removerLista(){
-    index = document.getElementById("index").value;
-    if(index>listas.length){
-        alert("Index não encontrado");
-    }else{
-        for(let i=1; i<listaTasks.length; i++){
-            if(listas[index-1] == listaTasks[i][1]){
-                listaTasks.splice(i, 1);
-                i--;
-            }
-        }
-        
-        listas.splice(index-1, 1)
-        localStorage.setItem("listasLS", JSON.stringify(listas));
-        localStorage.setItem("listaTasksLS", JSON.stringify(listaTasks));
-    }
+function editarCategoria(idCategoria){
+    nomeCategoria = document.querySelector("#categoriaInput").value;
+
+    let categoriaSelecionada = categorias.find(item => item.id==idCategoria);
     
+    categoriaSelecionada.nome = nomeCategoria;
+    localStorage.setItem("dados", JSON.stringify(dados));
 }
 
-function adicionarTask(){
-    const parametros = new URLSearchParams(window.location.search);
-    const lista = parametros.get("lista");
-    
-    task = document.getElementById("nomeInput").value; 
-    situacao = "pendente";
-    
-    listaTasks.push([task, lista, situacao]);
-    
-    localStorage.setItem("listaTasksLS", JSON.stringify(listaTasks));
+function preRemoverCategoria(idCategoria){
+    const btnDeletar = document.querySelector("#btnDeletar"+idCategoria);
+    btnDeletar.style.backgroundColor = "#c41e1e";
+    btnDeletar.style.color = "white";
+    btnDeletar.textContent = "Confirmar";
+    btnDeletar.setAttribute("onclick", "removerCategoria("+idCategoria+")");
 }
 
-function editarTask(lista){
+function removerCategoria(idCategoria){
+    dados.categorias = categorias.filter(item => item.id!=idCategoria);
+    limparTarefas(idCategoria);
+    localStorage.setItem("dados", JSON.stringify(dados));
+    window.location.reload();
+}
+
+function adicionarTarefa(idCategoria){
+    let categoriaSelecionada = categorias.find(item => item.id==idCategoria); 
+    
+    let id = obterId(tarefas);
+    let tarefa = document.getElementById("tarefaInput").value; 
+    let situacao = "pendente";
+    
+    tarefas.push({id: id, tarefa: tarefa, categoria: categoriaSelecionada.id, situacao: situacao});
+    
+    localStorage.setItem("dados", JSON.stringify(dados));
+    window.location.href = `task.html?categoria=${idCategoria}`;
+}
+
+function editarTarefa(lista){
     indexProcurado = document.getElementById("index").value;
     taskNome = document.getElementById("nomeInput").value;
 
@@ -231,61 +192,32 @@ function editarTask(lista){
     }
 }
 
-function excluirTask(lista){
-    indexProcurado = document.getElementById("index").value;
-    
-    indexLista = 0;
-    indexGeral = 0;
-    
-    for(const task of listaTasks){
-        if(lista == task[1]){
-            if(indexLista == indexProcurado-1){
-                listaTasks.splice(indexGeral, 1)
-                localStorage.setItem("listaTasksLS", JSON.stringify(listaTasks));
-                indexLista++;
-            }else{
-                indexGeral++;
-                indexLista++;
-            }
-
-        }else{
-            indexGeral++;
-        }
-    }
-    
-    if(indexGeral>listaTasks.length){
-        alert("Index não encontrado");
-    }
-}
-
 function mudaSituacao(id){
-    checkbox = document.getElementById("cb"+id);
+    const checkbox = document.querySelector("#cb"+id);
+    const tr = document.querySelector("#tr"+id);
+    let tarefa = tarefas.find(item => item.id == id);
 
     if(checkbox.checked){
-        listaTasks[id][2] = "concluida";
-        limparTasks();
-        carregarTasks();
+        tarefa.situacao = "concluida";
+        tr.style.backgroundColor = "green";
+        tr.style.textDecoration = "line-through";
+        tr.style.fontStyle = "italic";
     }else{
-        listaTasks[id][2] = "pendente";
-        limparTasks();
-        carregarTasks();
+        tr.style.backgroundColor = "var(--cor1)";
+        tr.style.textDecoration = "none";
+        tr.style.fontStyle = "none";
+        tarefa.situacao = "pendente";
     }
-    localStorage.setItem("listaTasksLS", JSON.stringify(listaTasks));
+    localStorage.setItem("dados", JSON.stringify(dados));
 }
 
-function limparTasks(){
-    tr = document.querySelectorAll("tr");
-    for (let i=1; i<tr.length; i++){
-        tr[i].remove();
-    }
+function apagarTarefasConcluidas(categoriaId){
+    dados.tarefas = tarefas.filter(tarefa => tarefa.situacao=="pendente" || tarefa.categoria!=categoriaId);
+    console.log(dados);
+    localStorage.setItem("dados", JSON.stringify(dados));
+    window.location.reload();
 }
 
-function marcarConcluido(item){
-    item.style.backgroundColor = "green";
-    item.style.textDecoration = "line-through";
-    item.style.fontStyle = "italic";
-}
-
-function desmarcarConcluido(item){
-    item.style.backgroundColor = "var(--cor1)";
+function limparTarefas(categoriaId){
+    dados.tarefas = tarefas.filter(tarefa => tarefa.categoria!=categoriaId);
 }
