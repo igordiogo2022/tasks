@@ -68,7 +68,7 @@ h1{
     color: white;
     width: 40%;
     height: 35%;
-    font: 500 16px;
+    font: 500 16px var(--fonte1);
     letter-spacing: 1px;
 }
 #formulario button:hover{
