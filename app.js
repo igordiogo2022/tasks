@@ -6,10 +6,10 @@ let [categorias, tarefas] = [dados.categorias, dados.tarefas];
 // ----- FUNÇÕES DE CARREGAMENTO -----
 function carregarCategorias(){
     converterDadosLocalStorage();
+    let htmlCategorias = "";
     
     categorias.forEach(categoria => {
-        main = document.querySelector("main");
-        main.innerHTML += `<div class='cardCategoria'>
+        htmlCategorias += `<div class='cardCategoria'>
         <p class='iconeCard'><i class='fa-solid fa-clipboard-check'></i></p>
         <p>${categoria.nome}</p>
         <button class='btnVerCategoria btnCard' onclick="acessarLink('task.html?categoria=${categoria.id}')">Ver</button>
@@ -19,6 +19,8 @@ function carregarCategorias(){
         </div>
         </div>`;
     });
+    main = document.querySelector("main");
+    main.innerHTML = htmlCategorias;
 }
 
 function carregarTarefas(){ 
@@ -35,6 +37,8 @@ function carregarTarefas(){
     const tarefasSelecionadas = tarefas.filter(tarefa => tarefa.categoria==categoria.id);
     
     const tabelaTarefas = document.getElementById("listaItens");
+    let htmlTarefas = "";
+
     tarefasSelecionadas.forEach(tarefa => {
         if(tarefa.situacao=="concluida"){
             classeTr = "concluida";
@@ -44,18 +48,20 @@ function carregarTarefas(){
             checked = "";
         }
 
-        tabelaTarefas.innerHTML += `<tr id='tr${tarefa.id}' class='${classeTr}'>
+        htmlTarefas += `<tr id='tr${tarefa.id}' class='${classeTr}'>
         <td>${tarefa.tarefa}</td>
         <td><button id='btnEditar' onclick='carregarFormulario("tarefas", ${tarefa.id})'><i class="fa-solid fa-pen"></i></button></td>
         <td class='checkboxTd'><input type='checkbox' id='cb${tarefa.id}' onclick='mudaSituacao(${tarefa.id})' ${checked}></td>
         </tr>`; 
     });
 
-    tabelaTarefas.innerHTML += `<tr>
+    htmlTarefas += `<tr>
     <td colspan="3">
     <button onclick="apagarTarefasConcluidas(${categoria.id})" id="apagarConcluidasBtn"><i class="fa-solid fa-trash" aria-hidden="true"></i> Apagar já Concluídas</button>
     </td>
     </tr>`;   
+
+    tabelaTarefas.innerHTML = htmlTarefas;
 }
 
 function carregarFormulario(tipo, idItem){
